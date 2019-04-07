@@ -1,4 +1,16 @@
 version: 2.1
+
+workflows:
+  build_and_deploy:
+    jobs:
+      - build
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
+
 jobs:
   build:
     docker:
@@ -38,14 +50,3 @@ jobs:
             set ssl:verify-certificate no;
             mirror --delete -R /tmp/workspace/dist /
           \"
-
-workflows:
-  build_and_deploy:
-    jobs:
-      - build
-      - deploy:
-          requires:
-            - build
-          filters:
-            branches:
-              only: master
