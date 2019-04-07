@@ -10,7 +10,7 @@
       </v-container>
     </v-content>
     <v-footer app>
-      <span>&nbsp;&copy; 2019 Jacques Supcik</span>
+      <span>&nbsp;&copy; 2019 Jacques Supcik, Passeport vacances Fribourg</span>
     </v-footer>
   </v-app>
 </template>
