@@ -31,7 +31,7 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
-            - build
+            - dist
       - store_artifacts:
           path: dist
           destination: dist
