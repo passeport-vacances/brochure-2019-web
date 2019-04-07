@@ -1,0 +1,51 @@
+version: 2.1
+jobs:
+  build:
+    docker:
+      - image: circleci/node:latest
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+            - v1-dependencies-
+      - run: npm install
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+      - run: npm run build
+      - persist_to_workspace:
+          root: /tmp/workspace
+          paths:
+            - build
+      - store_artifacts:
+          path: dist
+          destination: dist
+
+  deploy:
+    docker:
+      - image: circleci/node:latest
+    working_directory: ~/repo
+    steps:
+      - run sudo apt-get update && sudo apt install -y lftp
+      - attach_workspace:
+        at: /tmp/workspace
+      - run: >
+          lftp -c \"
+            open -u ${FTP_USER},${FTP_PASSWORD} ${FTP_HOST};
+            set ssl:verify-certificate no;
+            mirror --delete -R /tmp/workspace/dist /
+          \"
+
+workflows:
+  build_and_deploy:
+    jobs:
+      - build
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
