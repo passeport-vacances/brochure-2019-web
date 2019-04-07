@@ -45,8 +45,6 @@ jobs:
       - attach_workspace:
           at: /tmp/workspace
       - run: >
-          lftp -c \"
-            open -u ${FTP_USER},${FTP_PASSWORD} ${FTP_HOST};
+          lftp -c "open -u ${FTP_USER},${FTP_PASSWORD} ${FTP_HOST};
             set ssl:verify-certificate no;
-            mirror --delete -R /tmp/workspace/dist /
-          \"
+            mirror --delete -R /tmp/workspace/dist /"
